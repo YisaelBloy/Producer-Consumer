@@ -1,0 +1,80 @@
+package producerConsumer;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+
+public class MyRxClass {
+
+	public static void main(String[] args) {
+		
+		Observable<String> myObservable = Observable.create(new ObservableOnSubscribe<String>() {
+
+			@Override
+			public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+				// TODO Auto-generated method stub
+			}
+			
+			public void call(Subscriber<? super String> subscriber) {
+                subscriber.onNext("One");
+                subscriber.onNext("Two");
+                subscriber.onNext("Three");
+                subscriber.onComplete();
+            }
+		}); 
+		
+
+	       Subscriber<String> mySubscriber = new Subscriber<String>() {
+	            @Override
+	            public void onNext(String s) {
+	                System.out.println("mySubscriber onNext():" + s);
+	            }
+
+	            @Override
+	            public void onError(Throwable e) {
+	                System.out.println("mySubscriber onError():" + e.getMessage());
+	            }
+
+				@Override
+				public void onSubscribe(Subscription s) {
+	                System.out.println("mySubscriber onSubscription():" + s.toString());
+				}
+
+				@Override
+				public void onComplete() {
+	                System.out.println("== mySubscriber onComplete() ==");
+				}
+	        };
+
+	        Observer<String> myObserver = new Observer<String>() {
+	            @Override
+	            public void onNext(String s) {
+	                System.out.println("MyObserver onNext(): "+ s);
+	            }
+
+	            @Override
+	            public void onError(Throwable e) {
+	            }
+
+				@Override
+				public void onSubscribe(Disposable d) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onComplete() {
+					System.out.println("Observer complete");
+				}
+	        };
+
+	        myObservable.subscribe(myObserver);
+	        myObservable.subscribe((Consumer<? super String>) mySubscriber);
+	}
+}

@@ -1,0 +1,28 @@
+package producerConsumer;
+
+import org.reactivestreams.Subscriber;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
+public class TestPoc {
+
+	Observable<String> myOobserveable = Observable.create(new ObservableOnSubscribe<String>() {
+
+		public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+			// TODO Auto-generated method stub
+		}
+		
+		public void call(Subscriber<? super String> subscriber) {
+			subscriber.onNext("Blue Factory");
+			subscriber.onComplete();
+		}
+	});
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,77 @@
+package producerConsumer;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import rx.Subscriber;
+
+public class StatsSubscriber extends Subscriber<String> {
+
+	// Maps which the value is a counter for its key word. One Map for the event_type and one for the data field.
+	Map<String, Integer> eventCounterMap = new HashMap<String, Integer>();
+	Map<String, Integer> dataCounterMap = new HashMap<String, Integer>();
+
+	public void onNext(String text) {
+		// Split each event into two words, the event_type and its data.
+		String[] event = text.split(JsonReader.SEPARATOR, 2);
+		updateCountMap(event[0], eventCounterMap);
+		updateCountMap(event[1], dataCounterMap);
+	}
+	
+	public void onError(Throwable e) {
+		System.out.println("An error occurred: " + e.getMessage());
+	}
+
+	public void onCompleted() {
+		// Display all statistics.
+		displayStatistics();
+	}
+	
+	/**
+	 * Increment by 1 the counter (value) of the Map's key word.<br>
+	 * If the key does not already exist, add it to the Map with count = 1.
+	 * 
+	 * @param key
+	 * 		The Map's key word.
+	 * @param countMap
+	 * 		The counter Map.
+	 */
+	private void updateCountMap(String key, Map<String, Integer> countMap) {
+		// If the word exists, increment the counter by 1.
+		if (countMap.containsKey(key)) {
+			countMap.put(key, countMap.get(key) + 1);
+		// If the word does not already exist, add it to the map with count = 1.
+		} else {
+			countMap.put(key, 1);
+		}
+	}
+	
+	/**
+	 * Display the counter (value) for each word (key) in the Map.
+	 * 
+	 * @param counterMap
+	 * 		The counter Map.
+	 * @param description
+	 * 		Description of the counted word (key).
+	 */
+	private void displayCounter(Map<String, Integer> counterMap, String description) {
+		if (counterMap.isEmpty()) {
+			System.out.println("The " + description + " counter does not contain any information.");
+		} else {
+			System.out.println("Statistics for " + description + ":");
+			for (String key : (Set<String>) counterMap.keySet()) {
+				System.out.println("  the " + description + " \"" + key + "\" appears " + counterMap.get(key) + " times.");
+			}
+		}
+	}
+	
+	/**
+	 * Display the statistics of the "event_type" and the "data".
+	 */
+	protected void displayStatistics() {
+		displayCounter(eventCounterMap, "event_type");
+		displayCounter(dataCounterMap, "data");
+	}
+
+}

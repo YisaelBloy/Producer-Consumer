@@ -1,0 +1,62 @@
+package producerConsumer;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class JsonReader {
+	
+	public static void main(String[] args) { //throws Exception {
+        
+		String fileName = "JsonEventDataSource.txt";
+		ArrayList<JSONObject> jsonAllEvents = new ArrayList<JSONObject>();
+	    JSONObject jsonEvent;
+	    BufferedReader bufferReader = null;
+	    // We want to read one event at a time
+	    String event = null;
+	    
+	    try {
+	    	FileReader fileReader = new FileReader(fileName);
+	    	bufferReader = new BufferedReader(fileReader);
+
+	    	while((event = bufferReader.readLine()) != null) {
+	    		// Check the JSON line is not corrupted
+	    		if (event.charAt(0) == '{' && event.charAt(event.length()-1) == '}') {
+	    			// Parse the event
+	    			jsonEvent = (JSONObject) new JSONParser().parse(event);
+	    			jsonAllEvents.add(jsonEvent);
+	    			// getting the event_type and its data 
+	    			String eventType = (String) jsonEvent.get("event_type"); 
+	    			String data = (String) jsonEvent.get("data");
+
+	    			System.out.println(eventType + ":" + data);
+	    		}
+	    	}
+	    	System.out.println("The number of handled events is: " + jsonAllEvents.size());
+	    	
+	    } catch (FileNotFoundException excFile) {
+	    	System.out.println("Unable to open file: " + fileName);
+	    } catch (IOException excIO) {
+	    	System.out.println("Error reading file: " + fileName);
+	    } catch (ParseException excParse) {
+	    	excParse.printStackTrace();
+	    } finally {
+	    	// Always close files.
+	    	if (bufferReader != null) {
+	    		try {
+	    			bufferReader.close();
+	    		} catch (IOException e) {
+	    			e.printStackTrace();
+	    		}
+	    	}
+		}
+	    
+    }
+
+}

@@ -1,0 +1,7 @@
+package producerConsumer;
+
+import rx.Subscriber;
+
+public class StatiSubscriber extends Subscriber<T> {
+
+}

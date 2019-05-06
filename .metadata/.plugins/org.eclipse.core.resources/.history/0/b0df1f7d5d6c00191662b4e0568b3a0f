@@ -1,0 +1,55 @@
+package producerConsumer;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Consumer;
+
+public class TestPoc {
+
+	public static void main(String[] args) {
+		
+//	Observable<String> myObservable = Observable.create(new ObservableOnSubscribe<String>() {
+//
+//		public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+//			// TODO Auto-generated method stub
+//		}
+//		
+//		public void call(Subscriber<? super String> subscriber) {
+//			subscriber.onNext("Blue Factory");
+//			subscriber.onComplete();
+//		}
+//	});
+//	
+//	Subscriber<String> mySubscriber = new Subscriber<String>() {
+//
+//		public void onSubscribe(Subscription s) {
+//			System.out.println("=== Subscription has been started ===");
+//		}
+//
+//		public void onNext(String text) {
+//			System.out.println(text);
+//			
+//		}
+//
+//		public void onError(Throwable t) {
+//			System.out.println("An error occurred: " + t.getMessage());
+//		}
+//
+//		public void onComplete() {
+//			System.out.println("== Subscription has been completed ==");
+//			
+//		}
+//	};
+
+//	myObservable.subscribe(mySubscriber)
+
+		Observable<String> observable = Observable.just("one", "two", "three", "four", "five");
+		
+		Consumer<? super String> consumer = System.out::println;//("== Subscription has been completed ==");
+	}
+
+}

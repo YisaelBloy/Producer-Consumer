@@ -1,0 +1,73 @@
+package producerConsumer;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class JsonReader {
+	
+	public static void main(String[] args) { //throws Exception {
+        
+		String fileName = "JsonEventDataSource.txt";
+		ArrayList<JSONObject> jsonAllEvents = new ArrayList<JSONObject>();
+	    JSONObject jsonEvent;
+	    BufferedReader bufferReader = null;
+	    // We want to read one event at a time
+	    String event = null;
+	    
+	    try {
+			FileReader fileReader = new FileReader(fileName);
+			bufferReader = new BufferedReader(fileReader);
+			
+			while((event = bufferReader.readLine()) != null) {
+				jsonEvent = (JSONObject) new JSONParser().parse(event);
+				jsonAllEvents.add(jsonEvent);
+		        // getting the event_type and its data 
+		        String eventType = (String) jsonEvent.get("event_type"); 
+		        String data = (String) jsonEvent.get("data");
+		        
+		        System.out.println(eventType);
+		        System.out.println(data);
+		        
+//	            System.out.println((String)jsonObject.get("event_type")+":"+
+//	                               (String)jsonObject.get("Data"));
+	        }
+			
+		} catch (FileNotFoundException excFile) {
+			System.out.println("Unable to open file: " + fileName);
+		} catch (IOException excIO) {
+			System.out.println("Error reading file: " + fileName);
+		} catch (ParseException excParse) {
+			excParse.printStackTrace();
+		} finally {
+			// Always close files.
+			if (bufferReader != null) {
+				try {
+					bufferReader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	    
+		// parsing file "JsonSource.txt" which represent the event data
+//        Object object = new JSONParser().parse(new FileReader("JsonEventDataSource.txt")); 
+          
+        // type casting the object to JSONObject 
+//        JSONObject eventData = (JSONObject) object; 
+          
+        // getting the event_type and its data 
+//        String eventType = (String) eventData.get("event_type"); 
+//        String data = (String) eventData.get("data");
+        
+//        System.out.println(eventType);
+//        System.out.println(data);
+    }
+
+}

@@ -1,0 +1,30 @@
+package producerConsumer;
+
+import java.util.List;
+import rx.Observable;
+
+public class ServicePoc {
+
+	
+	public static void main(String[] args) {
+
+		String source = "EventsSource.txt";
+		
+		// Prepare to read the event data steam from the JSON source
+		JsonReader sourceReader = new JsonReader(source);
+		// Get all events from the source as a List of elements, each element contains an event_type and its data.
+		List<String> eventsData = sourceReader.getEventList();
+		
+		// Use Observable as a producer of the event data stream.
+		Observable<String> eventsObservable = Observable.from(eventsData);
+		
+		// Use Subscriber as the consumer of the event data stream.
+		StatsSubscriber eventsSubscriber = new StatsSubscriber();
+		
+		// Subscribe the consumer to the producer.
+		eventsObservable.subscribe(eventsSubscriber);
+		eventsSubscriber.displayStatistics();
+
+	}
+	
+}

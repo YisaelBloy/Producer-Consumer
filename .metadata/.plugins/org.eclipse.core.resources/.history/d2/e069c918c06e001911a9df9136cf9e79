@@ -1,0 +1,26 @@
+package producerConsumer;
+
+import java.io.FileReader;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+public class JsonReader {
+	
+	public static void main(String[] args) throws Exception {
+        
+		// parsing file "JsonSource.txt" which represent the event data
+        Object object = new JSONParser().parse(new FileReader("JsonSource.txt")); 
+          
+        // type casting the object to JSONObject 
+        JSONObject eventData = (JSONObject) object; 
+          
+        // getting the event_type and its data 
+        String eventType = (String) eventData.get("event_type"); 
+        String data = (String) eventData.get("data");
+        
+        System.out.println(eventType);
+        System.out.println(data);
+    }
+
+}

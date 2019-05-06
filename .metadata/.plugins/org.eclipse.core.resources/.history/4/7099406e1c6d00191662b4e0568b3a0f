@@ -1,0 +1,54 @@
+package producerConsumer;
+
+import rx.Observable;
+import rx.Subscriber;
+
+public class TestPoc {
+
+	public static void main(String[] args) {
+		
+	Observable myObservable = Observable.create(new Observable.OnSubscribe() {
+
+//		public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+//			// TODO Auto-generated method stub
+//		}
+		
+		public void call(Subscriber<? super String> subscriber) {
+			subscriber.onNext("Blue Factory");
+			subscriber.onCompleted();
+		}
+	});
+	
+	Subscriber<String> mySubscriber = new Subscriber<String>() {
+
+		public void onSubscribe(Subscription s) {
+			System.out.println("=== Subscription has been started ===");
+		}
+
+		public void onNext(String text) {
+			System.out.println(text);
+			
+		}
+
+		public void onError(Throwable t) {
+			System.out.println("An error occurred: " + t.getMessage());
+		}
+
+		public void onComplete() {
+			System.out.println("== Subscription has been completed ==");
+			
+		}
+	};
+
+	myObservable.subscribe(mySubscriber);
+	myObservable.subscribe(mySubscriber);
+
+//		Observable<String> observable = Observable.just("one", "two", "three", "four", "five");
+//		
+//		Consumer<? super String> consumer = System.out::println;
+//		
+//		observable.subscribe(consumer);
+		
+	}
+
+}

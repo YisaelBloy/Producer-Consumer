@@ -1,0 +1,92 @@
+package producerConsumer;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+/**
+ * Read events information from JSON file.
+ * @author Yisrael Bloygrund
+ *
+ */
+public class JsonReader {
+
+	public static final String SEPARATOR = ":";
+	private List<String> allEvents;
+	private List<JSONObject> jsonAllEvents;
+	private JSONObject jsonEvent;
+	private BufferedReader bufferReader = null;
+	private String fileName;
+	// In order to read one event at a time
+	private String event = null;
+
+	/**
+	 * @param source
+	 * 		The JSON source file path to read from.
+	 */
+	public JsonReader(String source) {
+		this.fileName = source;
+	}
+
+	/**
+	 * Get the events information from the JSON source as a List. <br>
+	 * For each event the List contains one elements; the <b>event_type</b> and its <b>data</b> separated by <b>":"</b>. <br>
+	 * <u>Note:</u> The list does not contain corrupted events (i.e corrupted lines in the JSON source).
+	 *   
+	 * @return
+	 * 		A List with all events sequenced as pairs of <b>event_type : data</b>.
+	 */
+	List<String> getEventList() {
+
+		allEvents = new ArrayList<String>();
+		jsonAllEvents = new ArrayList<JSONObject>();
+		try {
+			FileReader fileReader = new FileReader(fileName);
+			bufferReader = new BufferedReader(fileReader);
+
+			while((event = bufferReader.readLine()) != null) {
+				// Check that the JSON line is not corrupted
+				if (event.charAt(0) == '{' && event.charAt(event.length()-1) == '}') {
+					// Parse the event
+					jsonEvent = (JSONObject) new JSONParser().parse(event);
+					jsonAllEvents.add(jsonEvent);
+					// Get the event_type and its data 
+//					String eventType = (String) jsonEvent.get("event_type"); 
+//					String data = (String) jsonEvent.get("data");
+					allEvents.add((String) jsonEvent.get("event_type") + ":" 
+								+ (String) jsonEvent.get("data"));
+//					allEvents.add((String) jsonEvent.get("data"));
+
+//					System.out.println(eventType + ":" + data);
+				}
+			}
+			System.out.println("The number of handled events is: " + jsonAllEvents.size());
+
+		} catch (FileNotFoundException excFile) {
+			System.out.println("Unable to open file: " + fileName);
+		} catch (IOException excIO) {
+			System.out.println("Error reading file: " + fileName);
+		} catch (ParseException excParse) {
+			excParse.printStackTrace();
+		} finally {
+			// Close the resource
+			if (bufferReader != null) {
+				try {
+					bufferReader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return allEvents;
+	}
+
+
+}

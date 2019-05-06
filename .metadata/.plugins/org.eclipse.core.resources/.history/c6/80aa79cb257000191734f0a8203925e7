@@ -1,0 +1,22 @@
+package producerConsumer;
+
+import rx.Subscriber;
+
+public class StatiSubscriber extends Subscriber<String> {
+
+	public void onCompleted() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onError(Throwable e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onNext(String t) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

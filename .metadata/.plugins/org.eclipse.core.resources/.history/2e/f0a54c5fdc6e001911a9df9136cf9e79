@@ -1,0 +1,48 @@
+package producerConsumer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import rx.Observable;
+import rx.Subscriber;
+
+public class TestPoc {
+
+	
+	public static void main(String[] args) {
+
+		String source = "JsonSource.txt";
+		// Map for the event_type counter
+		Map<String, Integer> eventMap = new HashMap<String, Integer>();
+		// Map for the data field counter
+		Map<String, Integer> dataMap = new HashMap<String, Integer>();
+		JsonReader sourceReader = new JsonReader(source);
+		// Get all events from the source as a List which contains elements of event_type and its data.
+		List<String> eventsData = sourceReader.getEventList();
+		
+		// Use Observable as a producer of the event data stream.
+		Observable<String> eventsObservable = Observable.from(eventsData);
+		// Use Subscriber as the consumer of the event data stream.
+		Subscriber<String> mySubscriber = new Subscriber<String>() {
+
+			public void onNext(String text) {
+				System.out.println(text);
+
+			}
+
+			public void onError(Throwable t) {
+				System.out.println("An error occurred: " + t.getMessage());
+			}
+
+			public void onCompleted() {
+				System.out.println("== Subscription has been completed ==");
+
+			}
+		};
+
+		// Subscribe the consumer to the producer.
+		eventsObservable.subscribe(mySubscriber);
+	}
+
+}

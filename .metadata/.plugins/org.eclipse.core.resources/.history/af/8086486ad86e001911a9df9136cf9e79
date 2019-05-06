@@ -1,0 +1,40 @@
+package producerConsumer;
+
+import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+
+public class TestPoc {
+
+	
+	public static void main(String[] args) {
+
+		String source = "JsonSource.txt";
+		JsonReader sourceReader = new JsonReader(source);
+		// Get all events from the source as a List of Strings
+		List<String> eventsData = sourceReader.getEventList();
+		
+		Observable<String> eventsObservable = Observable.from(eventsData);
+		
+		Subscriber<String> mySubscriber = new Subscriber<String>() {
+
+			public void onNext(String text) {
+				System.out.println(text);
+
+			}
+
+			public void onError(Throwable t) {
+				System.out.println("An error occurred: " + t.getMessage());
+			}
+
+			public void onCompleted() {
+				System.out.println("== Subscription has been completed ==");
+
+			}
+		};
+
+		eventsObservable.subscribe(mySubscriber);
+	}
+
+}

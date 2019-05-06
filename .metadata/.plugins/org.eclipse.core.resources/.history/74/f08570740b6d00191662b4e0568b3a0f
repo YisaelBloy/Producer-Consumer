@@ -1,0 +1,58 @@
+package producerConsumer;
+
+import org.reactivestreams.Subscriber;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
+public class MyRxClass {
+
+	public static void main(String[] args) {
+		
+		Observable<String> myObservable = Observable.create(new ObservableOnSubscribe<String>() {
+
+			@Override
+			public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+				// TODO Auto-generated method stub
+			}
+			
+			public void call(Subscriber<? super String> subscriber) {
+                //Code to pass the data to the subscribers and observers goes here.
+            }
+		}); 
+		
+
+	       Subscriber<String> mySubscriber = new Subscriber<String>() {
+	            @Override
+	            public void onNext(String s) {
+	                System.out.println(s);
+	            }
+
+	            @Override
+	            public void onCompleted() {
+	            }
+
+	            @Override
+	            public void onError(Throwable e) {
+	            }
+	        };
+
+	        Observer<String> myObserver = new Observer<String>() {
+	            @Override
+	            public void onNext(String s) {
+	                System.out.println("MyObserver onNext(): "+ s);
+	            }
+
+	            @Override
+	            public void onCompleted() {
+	                System.out.println("Observer complete");
+	            }
+
+	            @Override
+	            public void onError(Throwable e) {
+	            }
+	        };
+
+	}
+}

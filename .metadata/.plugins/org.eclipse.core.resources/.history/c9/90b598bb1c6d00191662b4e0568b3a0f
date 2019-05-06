@@ -1,0 +1,41 @@
+package producerConsumer;
+
+import rx.Observable;
+import rx.Subscriber;
+
+public class TestPoc {
+
+	public static void main(String[] args) {
+		
+	@SuppressWarnings("deprecation")
+	Observable<String> myObservable = Observable.create(new Observable.OnSubscribe<String>() {
+
+		public void call(Subscriber<? super String> subscriber) {
+			subscriber.onNext("Blue Factory");
+			subscriber.onCompleted();
+		}
+	});
+	
+	Subscriber<String> mySubscriber = new Subscriber<String>() {
+
+		public void onNext(String text) {
+			System.out.println(text);
+			
+		}
+
+		public void onError(Throwable t) {
+			System.out.println("An error occurred: " + t.getMessage());
+		}
+
+		public void onCompleted() {
+			System.out.println("== Subscription has been completed ==");
+			
+		}
+	};
+
+	myObservable.subscribe(mySubscriber);
+	myObservable.subscribe(mySubscriber);
+
+	}
+
+}

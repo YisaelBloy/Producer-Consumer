@@ -1,0 +1,79 @@
+package producerConsumer;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+
+
+public class MyRxClass {
+
+	public static void main(String[] args) {
+		
+		@SuppressWarnings("deprecation")
+		Observable<String> myObservable = Observable.create(new Observable.OnSubscribe<String>() {
+
+			public void call(Subscriber<? super String> subscriber) {
+				int index = 0;
+				while(index < 5) {
+                subscriber.onNext("One" + index);
+                subscriber.onNext("Two" + index);
+                subscriber.onNext("Three" + index);
+                index++;
+				}
+                subscriber.onCompleted();
+            }
+		}); 
+		
+
+	       Subscriber<String> mySubscriber = new Subscriber<String>() {
+//	            @Override
+	            public void onNext(String s) {
+	                System.out.println("mySubscriber onNext(): " + s);
+	            }
+
+//	            @Override
+	            public void onError(Throwable e) {
+	                System.out.println("mySubscriber onError(): " + e.getMessage());
+	            }
+
+//				@Override
+//				public void onSubscribe(Subscription s) {
+//	                System.out.println("=== mySubscriber onSubscription(): " + s.toString() + " ===");
+//				}
+
+//				@Override
+				public void onCompleted() {
+	                System.out.println("== mySubscriber onCompleted() ==");
+				}
+
+	        };
+
+	        Observer<String> myObserver = new Observer<String>() {
+	        	int index = 1;
+//	            @Override
+	            public void onNext(String s) {
+	                System.out.println("MyObserver onNext(): "+ s + index);
+	                s = s + index;
+	                index++;
+	            }
+
+//	            @Override
+	            public void onError(Throwable e) {
+	            }
+
+//				@Override
+//				public void onSubscribe(Disposable d) {
+//	                System.out.println("=== MyObserver onSubscribe() ===");
+//				}
+
+//				@Override
+				public void onCompleted() {
+					System.out.println("== Observer complete ==");
+				}
+	        };
+
+	        myObservable.subscribe(mySubscriber);
+	        myObservable.subscribe(myObserver);
+	     
+	}
+}

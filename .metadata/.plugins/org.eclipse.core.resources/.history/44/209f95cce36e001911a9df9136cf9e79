@@ -1,0 +1,75 @@
+package producerConsumer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import rx.Observable;
+import rx.Subscriber;
+
+public class TestPoc {
+
+	
+	public static void main(String[] args) {
+
+		String source = "JsonSource.txt";
+		
+		// Read the event data steam from the JSON source
+		JsonReader sourceReader = new JsonReader(source);
+		// Get all events from the source as a List which contains elements of event_type and its data.
+		List<String> eventsData = sourceReader.getEventList();
+		
+		// Use Observable as a producer of the event data stream.
+		Observable<String> eventsObservable = Observable.from(eventsData);
+		
+		// Use Subscriber as the consumer of the event data stream.
+		Subscriber<String> mySubscriber = new Subscriber<String>() {
+			// Maps for counting the event_type and the words which appear in the data field
+			Map<String, Integer> eventMap = new HashMap<String, Integer>();
+			Map<String, Integer> dataMap = new HashMap<String, Integer>();
+			
+			public void onNext(String text) {
+				String[] event = text.split(JsonReader.SEPARATOR, 2);
+				updateCountMap(event[0], eventMap);
+				updateCountMap(event[1], dataMap);
+			}
+
+			public void onError(Throwable t) {
+				System.out.println("An error occurred: " + t.getMessage());
+			}
+
+			public void onCompleted() {
+				displayCounter(eventMap, "event_type");
+				displayCounter(dataMap, "data");
+			}
+			
+			private void updateCountMap(String text, Map<String, Integer> countMap) {
+				// If the word already exists, add 1 to the counter.
+				if (countMap.containsKey(text)) {
+					countMap.put(text, countMap.get(text) + 1);
+				// If the word does not exist, add it to the map with count = 1.
+				} else {
+					countMap.put(text, 1);
+				}
+			}
+			
+			private void displayCounter(Map<String, Integer> counterMap, String header) {
+				if (counterMap.isEmpty()) {
+					System.out.println("The " + header + " counter does not contain any information.");
+				} else {
+					System.out.println("Statistics for " + header + ":");
+					for (String key : (Set<String>) counterMap.keySet()) {
+						System.out.println("  the " + header + " " + key + " appears " + counterMap.get(key) + " times.");
+					}
+				}
+			}
+			
+		};
+
+		// Subscribe the consumer to the producer.
+		eventsObservable.subscribe(mySubscriber);
+		
+	}
+	
+}
